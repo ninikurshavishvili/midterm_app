@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 import '../models/crypto.dart';
 import '../data/crypto_data.dart';
+import '../utils/format_utils.dart';
 
 class CryptoListTile extends StatelessWidget {
   final Crypto crypto;
   final VoidCallback? onTap;
 
   const CryptoListTile({super.key, required this.crypto, this.onTap});
-
-  String _formatPrice(double price) {
-    if (price >= 1000) {
-      return '\$${price.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}';
-    } else if (price >= 1) {
-      return '\$${price.toStringAsFixed(2)}';
-    } else {
-      return '\$${price.toStringAsFixed(4)}';
-    }
-  }
 
   String _formatChange(double change) {
     final sign = change >= 0 ? '+' : '';
@@ -81,7 +72,7 @@ class CryptoListTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    _formatPrice(crypto.price),
+                    formatPrice(crypto.price),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),

@@ -1,32 +1,16 @@
 import 'package:flutter/material.dart';
 import '../models/crypto.dart';
 import '../data/crypto_data.dart';
+import '../utils/format_utils.dart';
 
 class CryptoDetailScreen extends StatelessWidget {
   final Crypto crypto;
 
   const CryptoDetailScreen({super.key, required this.crypto});
 
-  String _formatLargeNumber(double value) {
-    if (value >= 1e12) {
-      return '\$${(value / 1e12).toStringAsFixed(2)}T';
-    } else if (value >= 1e9) {
-      return '\$${(value / 1e9).toStringAsFixed(2)}B';
-    } else if (value >= 1e6) {
-      return '\$${(value / 1e6).toStringAsFixed(2)}M';
-    }
-    return '\$${value.toStringAsFixed(2)}';
-  }
+  String _formatLargeNumber(double value) => formatLargeNumber(value);
 
-  String _formatPrice(double price) {
-    if (price >= 1000) {
-      return '\$${price.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}';
-    } else if (price >= 1) {
-      return '\$${price.toStringAsFixed(2)}';
-    } else {
-      return '\$${price.toStringAsFixed(4)}';
-    }
-  }
+  String _formatPrice(double price) => formatPrice(price);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/crypto.dart';
 import '../data/crypto_data.dart';
+import '../utils/format_utils.dart';
 import '../widgets/crypto_list_tile.dart';
 import 'crypto_detail_screen.dart';
 
@@ -45,11 +46,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       .where((c) => portfolioHoldings.containsKey(c.id))
       .toList();
 
-  String _formatLargeValue(double value) {
-    if (value >= 1e6) return '\$${(value / 1e6).toStringAsFixed(2)}M';
-    if (value >= 1e3) return '\$${(value / 1e3).toStringAsFixed(2)}K';
-    return '\$${value.toStringAsFixed(2)}';
-  }
+  String _formatLargeValue(double value) => formatLargeNumber(value);
 
   void _navigateToDetail(BuildContext context, Crypto crypto) {
     Navigator.push(
