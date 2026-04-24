@@ -12,6 +12,13 @@ A small Flutter demo app that displays a mock cryptocurrency portfolio, a coins 
 - Data: in-repo mock data in `lib/data/crypto_data.dart` (no external API required)
 
 ---
+## 📱 App Screens
+
+<p align="center">
+  <img src="AppScreens/Dashboard.png" width="250"/>
+  <img src="AppScreens/Converter.png" width="250"/>
+  <img src="AppScreens/Coins.png" width="250"/>
+</p>
 
 ## Features
 - Dashboard showing portfolio overview (pre-populated holdings)
