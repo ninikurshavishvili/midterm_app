@@ -5,15 +5,8 @@ import '../utils/format_utils.dart';
 import '../widgets/crypto_list_tile.dart';
 import 'crypto_detail_screen.dart';
 
-class PortfolioScreen extends StatefulWidget {
+class PortfolioScreen extends StatelessWidget {
   const PortfolioScreen({super.key});
-
-  @override
-  State<PortfolioScreen> createState() => _PortfolioScreenState();
-}
-
-class _PortfolioScreenState extends State<PortfolioScreen> {
-  int _selectedTab = 0;
 
   double get _totalPortfolioValue {
     double total = 0;
@@ -42,18 +35,13 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
     return ((totalValue - totalPrevValue) / totalPrevValue) * 100;
   }
 
-  List<Crypto> get _portfolioCryptos => mockCryptos
-      .where((c) => portfolioHoldings.containsKey(c.id))
-      .toList();
-
-  String _formatLargeValue(double value) => formatLargeNumber(value);
+  List<Crypto> get _portfolioCryptos =>
+      mockCryptos.where((c) => portfolioHoldings.containsKey(c.id)).toList();
 
   void _navigateToDetail(BuildContext context, Crypto crypto) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => CryptoDetailScreen(crypto: crypto),
-      ),
+      MaterialPageRoute(builder: (_) => CryptoDetailScreen(crypto: crypto)),
     );
   }
 
@@ -61,7 +49,8 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final totalChange = _totalPortfolioChange;
-    final isPositivePortfolio = totalChange >= 0;
+    final isPositive = totalChange >= 0;
+    final portfolioCryptos = _portfolioCryptos;
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerLowest,
@@ -74,7 +63,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             forceElevated: innerBoxIsScrolled,
             flexibleSpace: FlexibleSpaceBar(
               title: const Text(
-                'Crypto Portfolio',
+                'Dashboard',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               background: Container(
@@ -82,10 +71,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [
-                      colorScheme.primary,
-                      colorScheme.tertiary,
-                    ],
+                    colors: [colorScheme.primary, colorScheme.tertiary],
                   ),
                 ),
                 child: Padding(
@@ -94,7 +80,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Total Value',
+                        'Portfolio Value',
                         style: TextStyle(
                           color: colorScheme.onPrimary.withAlpha(180),
                           fontSize: 13,
@@ -102,7 +88,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        _formatLargeValue(_totalPortfolioValue),
+                        formatLargeNumber(_totalPortfolioValue),
                         style: TextStyle(
                           color: colorScheme.onPrimary,
                           fontSize: 28,
@@ -113,19 +99,19 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                       Row(
                         children: [
                           Icon(
-                            isPositivePortfolio
+                            isPositive
                                 ? Icons.trending_up
                                 : Icons.trending_down,
-                            color: isPositivePortfolio
+                            color: isPositive
                                 ? Colors.greenAccent
                                 : Colors.redAccent,
                             size: 16,
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${isPositivePortfolio ? '+' : ''}${totalChange.toStringAsFixed(2)}% today',
+                            '${isPositive ? '+' : ''}${totalChange.toStringAsFixed(2)}% today',
                             style: TextStyle(
-                              color: isPositivePortfolio
+                              color: isPositive
                                   ? Colors.greenAccent
                                   : Colors.redAccent,
                               fontSize: 13,
@@ -141,41 +127,16 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             ),
           ),
         ],
-        body: Column(
-          children: [
-            // Tab selector
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-              child: SegmentedButton<int>(
-                segments: const [
-                  ButtonSegment(value: 0, label: Text('All Coins')),
-                  ButtonSegment(value: 1, label: Text('My Portfolio')),
-                ],
-                selected: {_selectedTab},
-                onSelectionChanged: (Set<int> selection) {
-                  setState(() => _selectedTab = selection.first);
-                },
-              ),
-            ),
-            // List
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.only(top: 8, bottom: 24),
-                itemCount: _selectedTab == 0
-                    ? mockCryptos.length
-                    : _portfolioCryptos.length,
-                itemBuilder: (context, index) {
-                  final crypto = _selectedTab == 0
-                      ? mockCryptos[index]
-                      : _portfolioCryptos[index];
-                  return CryptoListTile(
-                    crypto: crypto,
-                    onTap: () => _navigateToDetail(context, crypto),
-                  );
-                },
-              ),
-            ),
-          ],
+        body: ListView.builder(
+          padding: const EdgeInsets.only(top: 8, bottom: 24),
+          itemCount: portfolioCryptos.length,
+          itemBuilder: (context, index) {
+            final crypto = portfolioCryptos[index];
+            return CryptoListTile(
+              crypto: crypto,
+              onTap: () => _navigateToDetail(context, crypto),
+            );
+          },
         ),
       ),
     );
