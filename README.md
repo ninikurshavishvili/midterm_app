@@ -12,7 +12,7 @@ A small Flutter demo app that displays a mock cryptocurrency portfolio, a coins 
 - Data: in-repo mock data in `lib/data/crypto_data.dart` (no external API required)
 
 ---
-## 📱 App Screens
+## App Screens
 
 <p align="center">
   <img src="AppScreens/Dashboard.png" width="250"/>
@@ -96,51 +96,3 @@ To run on a specific device or emulator, use `flutter devices` to list and `flut
 
 ---
 
-## Extending / Production ideas
-- Replace mock data with real API calls (e.g., CoinGecko, CoinMarketCap). Add a service layer and repository pattern for data fetching and caching.
-- Add state management (Provider, Riverpod, Bloc) for larger-scale state handling and async flow.
-- Persist portfolio holdings with local storage (SharedPreferences, Hive, SQLite) or a backend.
-- Add tests: widget tests for UI and unit tests for converter/formatting logic.
-- Internationalization and currency locales for proper formatting across regions.
-- Improve accessibility and add animations for better UX.
-
----
-
-## Testing
-- The project contains a `test/` directory. Add unit/widget tests and run:
-  flutter test
-
----
-
-## Development tips
-- Material 3 is enabled (`useMaterial3: true`) and color scheme is seeded in `main.dart`. Adjust `seedColor` or theme definitions to change the app look.
-- Card appearance and rounded radius are centralized with `CardTheme` in `main.dart`.
-- To add a new crypto sample, update `mockCryptos` in `lib/data/crypto_data.dart` and, optionally, add holdings to `portfolioHoldings`.
-
----
-
-## Known limitations
-- Data is static and comes from `mockCryptos` (no network updates).
-- No authentication or backend; portfolio holdings are hard-coded.
-- Converter and prices are based on the mocked price values and do not reflect live market data.
-
----
-
-## Contributing
-1. Fork the repository.
-2. Create a branch: `git checkout -b feat/your-feature`
-3. Implement changes and add tests where appropriate.
-4. Open a pull request with a clear description of changes.
-
----
-
-## License
-Specify a license (e.g., MIT) in a top-level `LICENSE` file if you want to allow reuse. This repo does not include a license file by default.
-
----
-
-## Contact
-Maintainer: ninikurshavishvili  
-For questions or to report issues, open an issue on the repository.
-
----
