@@ -44,10 +44,14 @@ class _ConverterScreenState extends State<ConverterScreen> {
     return _cryptoById(_toId)?.price ?? 1.0;
   }
 
+  double get _rate {
+    if (_toPrice == 0) return 0;
+    return _fromPrice / _toPrice;
+  }
+
   double get _result {
     final amount = double.tryParse(_amountController.text) ?? 0;
-    if (_toPrice == 0) return 0;
-    return (amount * _fromPrice) / _toPrice;
+    return amount * _rate;
   }
 
   String _label(String id) {
@@ -211,7 +215,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '1 ${_label(_fromId)} = ${_formatResult(_toPrice == 0 ? 0 : _fromPrice / _toPrice)} ${_label(_toId)}',
+                      '1 ${_label(_fromId)} = ${_formatResult(_rate)} ${_label(_toId)}',
                       style:
                           Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.w600,

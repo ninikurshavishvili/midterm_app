@@ -8,7 +8,7 @@ import 'crypto_detail_screen.dart';
 class PortfolioScreen extends StatelessWidget {
   const PortfolioScreen({super.key});
 
-  double get _totalPortfolioValue {
+  static double _computeTotalValue() {
     double total = 0;
     for (final crypto in mockCryptos) {
       final holding = portfolioHoldings[crypto.id];
@@ -19,7 +19,7 @@ class PortfolioScreen extends StatelessWidget {
     return total;
   }
 
-  double get _totalPortfolioChange {
+  static double _computeTotalChange() {
     double totalValue = 0;
     double totalPrevValue = 0;
     for (final crypto in mockCryptos) {
@@ -35,7 +35,7 @@ class PortfolioScreen extends StatelessWidget {
     return ((totalValue - totalPrevValue) / totalPrevValue) * 100;
   }
 
-  List<Crypto> get _portfolioCryptos =>
+  static List<Crypto> _portfolioCryptos() =>
       mockCryptos.where((c) => portfolioHoldings.containsKey(c.id)).toList();
 
   void _navigateToDetail(BuildContext context, Crypto crypto) {
@@ -48,9 +48,9 @@ class PortfolioScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final totalChange = _totalPortfolioChange;
+    final totalChange = _computeTotalChange();
     final isPositive = totalChange >= 0;
-    final portfolioCryptos = _portfolioCryptos;
+    final portfolioCryptos = _portfolioCryptos();
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerLowest,
@@ -88,7 +88,7 @@ class PortfolioScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        formatLargeNumber(_totalPortfolioValue),
+                        formatLargeNumber(_computeTotalValue()),
                         style: TextStyle(
                           color: colorScheme.onPrimary,
                           fontSize: 28,
