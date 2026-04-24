@@ -57,6 +57,60 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
     );
   }
 
+  Future<void> _showAddDialog(BuildContext context, Crypto crypto) async {
+    final controller = TextEditingController();
+    try {
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Add ${crypto.name}'),
+          content: TextField(
+            controller: controller,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: const InputDecoration(labelText: 'Amount'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                final amount = double.tryParse(controller.text.trim());
+                if (amount == null || amount <= 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Enter valid amount')),
+                  );
+                } else {
+                  setState(() {
+                    portfolioHoldings[crypto.id] =
+                        (portfolioHoldings[crypto.id] ?? 0) + amount;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Added to portfolio')),
+                  );
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      controller.dispose();
+    }
+  }
+
+  void _removeFromPortfolio(BuildContext context, Crypto crypto) {
+    setState(() {
+      portfolioHoldings.remove(crypto.id);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Removed from portfolio')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -168,10 +222,51 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                   final crypto = _selectedTab == 0
                       ? mockCryptos[index]
                       : _portfolioCryptos[index];
-                  return CryptoListTile(
-                    crypto: crypto,
-                    onTap: () => _navigateToDetail(context, crypto),
-                  );
+
+                  if (_selectedTab == 0) {
+                    // All Coins: swipe right to add
+                    return Dismissible(
+                      key: ValueKey('all_${crypto.id}'),
+                      direction: DismissDirection.startToEnd,
+                      confirmDismiss: (_) async {
+                        await _showAddDialog(context, crypto);
+                        return false;
+                      },
+                      background: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(left: 20),
+                        child: const Icon(Icons.add, color: Colors.white),
+                      ),
+                      child: CryptoListTile(
+                        crypto: crypto,
+                        onTap: () => _navigateToDetail(context, crypto),
+                      ),
+                    );
+                  } else {
+                    // My Portfolio: swipe left to remove
+                    return Dismissible(
+                      key: ValueKey('portfolio_${crypto.id}'),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (_) => _removeFromPortfolio(context, crypto),
+                      background: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      child: CryptoListTile(
+                        crypto: crypto,
+                        onTap: () => _navigateToDetail(context, crypto),
+                      ),
+                    );
+                  }
                 },
               ),
             ),

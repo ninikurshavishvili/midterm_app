@@ -105,7 +105,7 @@ const List<Crypto> mockCryptos = [
 ];
 
 // Portfolio holdings: crypto id -> quantity owned
-const Map<String, double> portfolioHoldings = {
+Map<String, double> portfolioHoldings = {
   'bitcoin': 0.25,
   'ethereum': 2.5,
   'solana': 15.0,
