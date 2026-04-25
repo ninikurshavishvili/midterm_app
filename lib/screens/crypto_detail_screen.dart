@@ -16,7 +16,7 @@ class CryptoDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final cryptoAccent = cryptoColor(crypto);
-    final holding = portfolioHoldings[crypto.id];
+    final holding = portfolioHoldings.value[crypto.id];
     final holdingValue = holding != null ? holding * crypto.price : null;
 
     final changeColor =
