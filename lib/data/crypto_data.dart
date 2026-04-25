@@ -104,13 +104,39 @@ const List<Crypto> mockCryptos = [
   ),
 ];
 
-// Portfolio holdings: crypto id -> quantity owned
-const Map<String, double> portfolioHoldings = {
+// Portfolio holdings are now mutable via a ValueNotifier so UI can listen for changes.
+final ValueNotifier<Map<String, double>> portfolioHoldings =
+ValueNotifier<Map<String, double>>({
   'bitcoin': 0.25,
   'ethereum': 2.5,
   'solana': 15.0,
   'dogecoin': 5000.0,
   'chainlink': 100.0,
-};
+});
 
 Color cryptoColor(Crypto crypto) => Color(crypto.colorValue);
+
+
+void addToPortfolio(String id, {double amount = 1.0}) {
+  final current = Map<String, double>.from(portfolioHoldings.value);
+  current[id] = (current[id] ?? 0) + amount;
+  portfolioHoldings.value = current;
+}
+
+
+void setPortfolioHolding(String id, double amount) {
+  final current = Map<String, double>.from(portfolioHoldings.value);
+  if (amount <= 0) {
+    current.remove(id);
+  } else {
+    current[id] = amount;
+  }
+  portfolioHoldings.value = current;
+}
+
+double? removeFromPortfolio(String id) {
+  final current = Map<String, double>.from(portfolioHoldings.value);
+  final prev = current.remove(id);
+  portfolioHoldings.value = current;
+  return prev;
+}
